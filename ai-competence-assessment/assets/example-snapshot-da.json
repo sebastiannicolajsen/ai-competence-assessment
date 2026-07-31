@@ -1,0 +1,83 @@
+{
+  "lang": "da",
+  "person": "Ny kollega",
+  "date": "31. jul 2026",
+  "basis": "14 samtaler fra chat, 1.–30. juli (ikke Claude Code eller Cowork)",
+  "confidence": "med",
+  "statement": "Du integrerer AI kontinuerligt i dit arbejde.",
+  "example": "Fx vender du tilbage til den samme samtale over flere dage og bygger videre, i stedet for at starte forfra hver gang.",
+  "straight_talk": "Du er hurtig til at komme i gang, og du bliver ved til svaret sidder — det er tydeligt i samtalerne. Men du tjekker næsten aldrig noget efter. Du retter formuleringer, ikke indhold, og i de tilfælde hvor et tal eller en påstand var forkert, gik det videre uden at blive fanget. Det er ikke et spørgsmål om at bruge AI mindre; det er det ene sted, hvor din arbejdsgang mangler et led.",
+  "areas": [
+    {
+      "id": "delegation",
+      "label": "Hvad du giver videre",
+      "score": 3,
+      "summary": "Du giver rutinearbejdet videre og holder selv fast i det, der kræver dømmekraft.",
+      "info": "Handler om at vælge, hvad AI skal tage sig af, og hvad du holder fast i selv.",
+      "quotes": [
+        {
+          "text": "Jeg laver selv strukturen, men du må gerne skrive første udkast til afsnittene",
+          "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000001",
+          "surface": "chat"
+        }
+      ]
+    },
+    {
+      "id": "description",
+      "label": "Hvordan du beder om det",
+      "score": 4,
+      "summary": "Du sætter format og rammer fra start og retter hurtigt til, når svaret rammer ved siden af.",
+      "info": "Hvor tydeligt du forklarer mål, format og eksempler, så svaret rammer i første hug.",
+      "quotes": [
+        {
+          "text": "Skriv det som en tabel med tre kolonner, og hold hver linje under 15 ord",
+          "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000002",
+          "surface": "chat"
+        },
+        {
+          "text": "Det er for langt — samme indhold, halv længde, og drop indledningen",
+          "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000003",
+          "surface": "chat"
+        }
+      ]
+    },
+    {
+      "id": "discernment",
+      "label": "Hvordan du vurderer svaret",
+      "score": 2,
+      "thin": true,
+      "summary": "Når svaret ser pænt og sikkert ud, tager du det ofte for gode varer.",
+      "info": "At læse svaret kritisk og fange fejl — især når det ser overbevisende ud.",
+      "quotes": [
+        {
+          "text": "Fedt, det bruger vi",
+          "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000004",
+          "surface": "chat"
+        }
+      ]
+    },
+    {
+      "id": "diligence",
+      "label": "Ansvar og data",
+      "score": null,
+      "summary": "Der er ikke noget i samtalerne, der viser, hvordan du håndterer følsomme oplysninger.",
+      "info": "At bruge AI ansvarligt — tjekke fakta og passe på følsomme oplysninger.",
+      "quotes": []
+    }
+  ],
+  "moves": [
+    {
+      "text": "Når et svar ser rigtigt ud, så stop og tjek én ting du kan efterprøve — et tal, et navn, en dato — før du bruger det. Det er lige der, man kommer til at stole for meget.",
+      "from": "discernment"
+    },
+    {
+      "text": "Bed om det modsatte én gang i ugen: \"hvad taler imod det her?\" Du får hurtigt øje på, hvor svaret var tyndt.",
+      "from": "discernment"
+    }
+  ],
+  "epigraph": "Det, der flytter dig, er ikke at bruge AI mere — men at bruge det mere bevidst.",
+  "open_questions": [
+    "Hvad lægger du faktisk ind i AI — og har I aftalt på teamet, hvad man må?",
+    "Når du bruger et tal eller en påstand fra AI i noget, der går videre: hvem tjekker det?"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "lang": "da",
+  "person": "Linktest",
+  "date": "31. jul 2026",
+  "basis": "3 conversations — placeholder link test, fill in your own URLs",
+  "confidence": "low",
+  "statement": "Link test: three quotes, three real conversations.",
+  "example": "Klik på et felt nedenfor, fold citaterne ud, og klik på selve citatet. Det skal åbne samtalen det kom fra.",
+  "areas": [
+    {
+      "id": "delegation",
+      "label": "Hvad du giver videre",
+      "score": 3,
+      "summary": "Test af link til samtalen om læringsforløb for SMV'er.",
+      "info": "Handler om at vælge, hvad AI skal tage sig af, og hvad du holder fast i selv.",
+      "quotes": [
+        {
+          "text": "(replace with a verbatim line from your own message)",
+          "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000001",
+          "surface": "chat"
+        }
+      ]
+    },
+    {
+      "id": "description",
+      "label": "Hvordan du beder om det",
+      "score": 4,
+      "summary": "Test af link til samtalen om company fact pack-prototypen.",
+      "info": "Hvor tydeligt du forklarer mål, format og eksempler.",
+      "quotes": [
+        {
+          "text": "(replace with a verbatim line from your own message)",
+          "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000002",
+          "surface": "chat"
+        }
+      ]
+    },
+    {
+      "id": "discernment",
+      "label": "Hvordan du vurderer svaret",
+      "score": 3,
+      "summary": "Test af link til den første kørsel af selve dette kort.",
+      "info": "At læse svaret kritisk og fange fejl.",
+      "quotes": [
+        {
+          "text": "(replace with a verbatim line from your own message)",
+          "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000003",
+          "surface": "chat"
+        }
+      ]
+    },
+    {
+      "id": "diligence",
+      "label": "Ansvar og data",
+      "score": null,
+      "summary": "Ikke en del af linktesten — vist som ikke observeret.",
+      "info": "At bruge AI ansvarligt — tjekke fakta og passe på følsomme oplysninger.",
+      "quotes": []
+    }
+  ],
+  "moves": [
+    {
+      "text": "Klik på i-ikonet ved Assisteret, Integreret og Transformativ — boksen skal åbne opad og ligge oven på alt andet.",
+      "from": "delegation"
+    },
+    {
+      "text": "Tjek at den lille cirkel med „du er her“ står på kurven.",
+      "from": "description"
+    },
+    {
+      "text": "Klik på et citat. Virker det ikke herinde, så hent filen ned og åbn den i en browser.",
+      "from": "discernment"
+    }
+  ],
+  "epigraph": "Hvis linket ikke åbner, viser kortet adressen i stedet.",
+  "open_questions": [
+    "Ansvar og data er ikke en del af denne test — derfor står der ingen anbefaling om det."
+  ]
+}

@@ -4,9 +4,10 @@
   "date": "31 Jul 2026",
   "basis": "14 conversations from chat, 1–30 July (no Claude Code or Cowork)",
   "confidence": "med",
-  "statement": "You integrate AI continuously into your work.",
-  "example": "For instance, you come back to the same conversation over several days and build on it, rather than starting fresh each time.",
-  "straight_talk": "You get moving fast and you keep going until the answer holds up — that's clear across the conversations. But you almost never check anything afterwards. You correct phrasing, not substance, and in the cases where a figure or a claim was wrong, it went through uncaught. This isn't about using AI less; it's the one place your workflow is missing a step.",
+  "example": {
+    "text": "For instance, you come back to the same conversation over several days and build on it, rather than starting fresh.",
+    "from": "delegation"
+  },
   "areas": [
     {
       "id": "delegation",
@@ -20,7 +21,8 @@
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000001",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Hands routine work to AI, keeps what needs judgement."
     },
     {
       "id": "description",
@@ -39,45 +41,46 @@
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000003",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Sets goal, format and constraints up front most of the time."
     },
     {
       "id": "discernment",
       "label": "How you judge the answer",
       "score": 2,
       "thin": true,
-      "summary": "When the answer looks clean and confident, you often take it at face value.",
-      "info": "Reading the answer critically and catching errors — especially when it looks convincing.",
+      "summary": "You catch clumsy wording fast. Errors in the content itself go through.",
+      "info": "Reading the answer critically and catching errors, especially when it looks convincing.",
       "quotes": [
         {
           "text": "Nice, we'll use that",
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000004",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Reacts to what reads wrong; corrects wording, tone or structure rather than substance.",
+      "evidence_kind": "language"
     },
     {
       "id": "diligence",
       "label": "Care and data",
       "score": null,
-      "summary": "Nothing in the conversations shows how you handle sensitive information.",
-      "info": "Using AI responsibly — checking facts and looking after sensitive information.",
-      "quotes": []
+      "summary": "You avoid the obvious, and there is no habit behind it yet.",
+      "info": "Confirming an answer before you rely on it, and looking after what you put in.",
+      "quotes": [],
+      "self_report": "I don't put client names in, but I haven't thought much beyond that."
     }
   ],
   "moves": [
     {
-      "text": "When an answer looks right, stop and check one thing you can verify — a number, a name, a date — before you use it. That's exactly where over-trust creeps in.",
+      "text": "When an answer looks right, check one thing in it you can verify. A number, a name, a date.",
       "from": "discernment"
     },
     {
-      "text": "Once a week, ask for the opposite: \"what argues against this?\" You'll spot fast where the answer was thin.",
+      "text": "Once a week, ask what argues against the answer. You will see fast where it was thin.",
       "from": "discernment"
     }
   ],
-  "open_questions": [
-    "What do you actually put into AI — and has the team agreed what's allowed?",
-    "When you use a figure or a claim from AI in something that goes further: who checks it?"
-  ],
-  "epigraph": "What moves you forward isn't using AI more — it's using it more deliberately."
+  "n_sources": 14,
+  "why": "Your checking happens after something already looks wrong. You correct wording quickly and well. Nothing in these conversations shows you checking a figure or a claim before you use it, and in two cases a wrong number went through. That is the one step missing."
 }

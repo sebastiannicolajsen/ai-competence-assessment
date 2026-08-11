@@ -4,8 +4,10 @@
   "date": "31. jul 2026",
   "basis": "3 conversations — placeholder link test, fill in your own URLs",
   "confidence": "low",
-  "statement": "Link test: three quotes, three real conversations.",
-  "example": "Klik på et felt nedenfor, fold citaterne ud, og klik på selve citatet. Det skal åbne samtalen det kom fra.",
+  "example": {
+    "text": "Klik på et felt nedenfor, fold citaterne ud, og klik på selve citatet. Det skal åbne samtalen det kom fra.",
+    "from": "delegation"
+  },
   "areas": [
     {
       "id": "delegation",
@@ -19,7 +21,8 @@
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000001",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Giver rutineopgaver til AI, beholder det der kræver dømmekraft."
     },
     {
       "id": "description",
@@ -33,7 +36,8 @@
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000002",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Sætter mål, format og rammer fra start det meste af tiden."
     },
     {
       "id": "discernment",
@@ -47,22 +51,21 @@
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000003",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Fanger fejl i selve indholdet, ikke kun i måden det er skrevet på.",
+      "evidence_kind": "mixed"
     },
     {
       "id": "diligence",
       "label": "Ansvar og data",
       "score": null,
-      "summary": "Ikke en del af linktesten — vist som ikke observeret.",
+      "summary": "Ikke en del af linktesten, vist som ikke observeret.",
       "info": "At bruge AI ansvarligt — tjekke fakta og passe på følsomme oplysninger.",
-      "quotes": []
+      "quotes": [],
+      "self_report": "Jeg tænker over kundenavne, ellers ikke rigtig."
     }
   ],
   "moves": [
-    {
-      "text": "Klik på i-ikonet ved Assisteret, Integreret og Transformativ — boksen skal åbne opad og ligge oven på alt andet.",
-      "from": "delegation"
-    },
     {
       "text": "Tjek at den lille cirkel med „du er her“ står på kurven.",
       "from": "description"
@@ -72,8 +75,6 @@
       "from": "discernment"
     }
   ],
-  "epigraph": "Hvis linket ikke åbner, viser kortet adressen i stedet.",
-  "open_questions": [
-    "Ansvar og data er ikke en del af denne test — derfor står der ingen anbefaling om det."
-  ]
+  "n_sources": 12,
+  "why": "Du beder præcist om det, du vil have, og du får det. Det du ikke gør, er at tjekke tallene i det, du får igen. To gange er en forkert dato gået videre."
 }

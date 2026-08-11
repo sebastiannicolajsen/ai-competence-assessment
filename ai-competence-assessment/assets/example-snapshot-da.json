@@ -4,9 +4,10 @@
   "date": "31. jul 2026",
   "basis": "14 samtaler fra chat, 1.–30. juli (ikke Claude Code eller Cowork)",
   "confidence": "med",
-  "statement": "Du integrerer AI kontinuerligt i dit arbejde.",
-  "example": "Fx vender du tilbage til den samme samtale over flere dage og bygger videre, i stedet for at starte forfra hver gang.",
-  "straight_talk": "Du er hurtig til at komme i gang, og du bliver ved til svaret sidder — det er tydeligt i samtalerne. Men du tjekker næsten aldrig noget efter. Du retter formuleringer, ikke indhold, og i de tilfælde hvor et tal eller en påstand var forkert, gik det videre uden at blive fanget. Det er ikke et spørgsmål om at bruge AI mindre; det er det ene sted, hvor din arbejdsgang mangler et led.",
+  "example": {
+    "text": "Fx vender du tilbage til den samme samtale over flere dage og bygger videre, i stedet for at starte forfra.",
+    "from": "delegation"
+  },
   "areas": [
     {
       "id": "delegation",
@@ -20,7 +21,8 @@
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000001",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Giver rutineopgaver til AI, beholder det der kræver dømmekraft."
     },
     {
       "id": "description",
@@ -39,45 +41,46 @@
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000003",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Sætter mål, format og rammer fra start det meste af tiden."
     },
     {
       "id": "discernment",
       "label": "Hvordan du vurderer svaret",
       "score": 2,
       "thin": true,
-      "summary": "Når svaret ser pænt og sikkert ud, tager du det ofte for gode varer.",
-      "info": "At læse svaret kritisk og fange fejl — især når det ser overbevisende ud.",
+      "summary": "Du fanger klodsede formuleringer hurtigt. Fejl i selve indholdet går igennem.",
+      "info": "At læse svaret kritisk og fange fejl, især når det ser overbevisende ud.",
       "quotes": [
         {
           "text": "Fedt, det bruger vi",
           "url": "https://claude.ai/chat/00000000-0000-0000-0000-000000000004",
           "surface": "chat"
         }
-      ]
+      ],
+      "anchor": "Reagerer på det der lyder forkert; retter formulering, tone eller struktur frem for indhold.",
+      "evidence_kind": "language"
     },
     {
       "id": "diligence",
       "label": "Ansvar og data",
       "score": null,
-      "summary": "Der er ikke noget i samtalerne, der viser, hvordan du håndterer følsomme oplysninger.",
-      "info": "At bruge AI ansvarligt — tjekke fakta og passe på følsomme oplysninger.",
-      "quotes": []
+      "summary": "Du undgår det åbenlyse, og der er ingen vane bag endnu.",
+      "info": "At bekræfte et svar, før du bruger det, og passe på det du lægger ind.",
+      "quotes": [],
+      "self_report": "Jeg lægger ikke kundenavne ind, men jeg har ikke tænkt meget videre end det."
     }
   ],
   "moves": [
     {
-      "text": "Når et svar ser rigtigt ud, så stop og tjek én ting du kan efterprøve — et tal, et navn, en dato — før du bruger det. Det er lige der, man kommer til at stole for meget.",
+      "text": "Når et svar ser rigtigt ud, så tjek én ting i det, du kan efterprøve. Et tal, et navn, en dato.",
       "from": "discernment"
     },
     {
-      "text": "Bed om det modsatte én gang i ugen: \"hvad taler imod det her?\" Du får hurtigt øje på, hvor svaret var tyndt.",
+      "text": "En gang om ugen: bed om, hvad der taler imod svaret. Så ser du hurtigt, hvor det var tyndt.",
       "from": "discernment"
     }
   ],
-  "epigraph": "Det, der flytter dig, er ikke at bruge AI mere — men at bruge det mere bevidst.",
-  "open_questions": [
-    "Hvad lægger du faktisk ind i AI — og har I aftalt på teamet, hvad man må?",
-    "Når du bruger et tal eller en påstand fra AI i noget, der går videre: hvem tjekker det?"
-  ]
+  "n_sources": 14,
+  "why": "Dit tjek sker, efter noget ser forkert ud. Du retter formuleringer hurtigt og godt. Intet i samtalerne viser dig tjekke et tal eller en påstand, før du bruger den, og i to tilfælde gik et forkert tal videre. Det er det ene led, der mangler."
 }

@@ -10,7 +10,7 @@ with AI, with evidence surfacing and referencing.
  Download the file above, then in Claude go to
 **Settings → Capabilities → Skills → Upload skill** and pick the file. Then just ask Claude for an AI competence assessment, or use `/` to select the skill.
 
-<sub>The button hands you a `.skill` file because Safari silently unpacks `.zip` downloads into a folder, and Claude wants the archive, not the folder. If Claude's file picker won't take the `.skill`, rename it to `ai-competence-assessment.zip` and upload that — it is the same archive, byte for byte. On Chrome, Firefox or Edge you can also just take the [`.zip`](https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.zip) directly.</sub>
+The button serves `.skill` because Safari unpacks `.zip` downloads into a folder, and Claude needs the archive itself. If the file picker won't take it, rename the file to `.zip` — or use the [`.zip` mirror](https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.zip), which is the same archive byte for byte.
 
 ***Note: when used outside of a project, it does not access chat history from any projects, and vice-versa. Use inside a project to a snapshot of your way of working within that.***
 

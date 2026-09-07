@@ -1,13 +1,14 @@
 ---
 name: ai-competence-assessment
 description: >-
-  Produce a personal AI competence assessment — a single visual card how the person works with AI (assisted → integrated →
-  transformative), using quotes and more Built for onboarding new
-  starters ("AI fluency check", "assess my AI use", "how good am I at using AI?",
-  "hvor god er jeg til at bruge AI?", "lav min AI-profil"), but works for anyone
-  reflecting on how they work with AI. Use this whenever someone wants a
-  self-assessment, competence profile, fluency check, or a snapshot of their own
-  AI use, or "see where I'm at with AI" without naming a format. Output is a standalone HTML card.
+  Produce a personal AI competence assessment — a single visual card showing how
+  the person works with AI (assisted → integrated → transformative), grounded in
+  verbatim quotes from their own conversations. Built for onboarding new starters
+  ("AI fluency check", "assess my AI use", "how good am I at using AI?", "hvor god
+  er jeg til at bruge AI?", "lav min AI-profil"), but works for anyone reflecting
+  on how they work with AI. Use this whenever someone wants a self-assessment,
+  competence profile, fluency check, or a snapshot of their own AI use, or to
+  "see where I'm at with AI" without naming a format. Output is a standalone HTML card.
 ---
 
 # AI Competence Assessment
@@ -29,33 +30,83 @@ three-band rail reads a grade before they reach anything useful. Everything belo
 the grounding for them. This puts real weight on the moves being specific: a recommendation
 that arrives before its evidence has to earn its place in one line.
 
-## Step 1 — Gather evidence, then stop and confirm
+## Step 1 — Work out what you can see, gather evidence, then stop and confirm
 
-- If the person has chat history, use `recent_chats` and `conversation_search` to pull their real
-  conversations. **Pull to the cap, not to the first plausible handful: 20 conversations or 30
-  days, whichever is larger.** Retrieval depth is currently the biggest source of error in this
-  card. Two runs on the same person, same window, once returned 7 conversations and once 20, with
-  no overlapping evidence and different conclusions. Under 8 conversations, confidence is `low`
-  and the script enforces it. **Keep the `url` attribute of every chat you pull** — you will
-  attach it to the quotes so they link back to their origin.
-- **Always ask the data question, even with rich history:** *"Do you think about what information
-  you put in, for example ID numbers, salary, client data?"* (DA: *"Tænker du over, hvilke
-  oplysninger du lægger ind, fx CPR, løn, kundedata?"*) Responsible use is the one thing a chat
-  log structurally cannot show, so it is the one thing you have to ask. The answer goes in the
-  diligence area's `self_report` and is labelled on the card as the person's own words.
-- **New starters usually have little or no history.** Don't force it — run the 6 reflection
-  questions in `references/framework.md`. Their answers become the evidence, and the card says so.
-- If the user wants to include project specific knowledge, ask them to run the skill in their project.
+### 1a — Find out what this platform actually lets you reach
 
-Then report back before assessing anything:
+Do this before pulling anything. What you can see differs by platform and, on claude.ai, by
+*where in it you are standing*. Getting this wrong doesn't produce an error, it produces a
+confident card about a slice of someone's work.
+
+**Tier A — native history search.** On claude.ai you have `recent_chats` and
+`conversation_search`. **Pull to the cap, not to the first plausible handful: 20 conversations
+or 30 days, whichever is larger.** Retrieval depth is currently the biggest source of error in
+this card. Two runs on the same person, same window, once returned 7 conversations and once 20,
+with no overlapping evidence and different conclusions. Under 8 conversations, confidence is
+`low` and the script enforces it. **Keep the `url` attribute of every chat you pull** — you will
+attach it to the quotes so they link back to their origin.
+
+> **The scope boundary — say this out loud, every run.** History search only reaches the place
+> it is run from. Run outside a project, and the person's project conversations are invisible.
+> Run inside a project, and everything outside it is invisible. Neither run tells you the other
+> half exists, so a card built from one side silently claims to describe all of someone's AI use.
+> Work out which side you are on, tell the person in the Step 1 report, and tag quotes `chat` or
+> `project` accordingly. If their real work lives in projects, the fix is to run the skill again
+> from inside the project and combine, not to assess the half you happen to have.
+
+**Tier B — material the person hands over.** This is the path on every other platform, and the
+way to cross the boundary above. Claude Code, ChatGPT, Gemini, Copilot, Cursor, an internal
+assistant — none of them expose the others' history, so ask for it:
+
+- **Claude Code** keeps local transcripts at `~/.claude/projects/<project>/<session>.jsonl`.
+- **ChatGPT** exports from Settings → Data controls → Export data, which mails a zip containing
+  `conversations.json`.
+- **Gemini** exports through Google Takeout, under My Activity → Gemini Apps.
+- **Anything else**, including tools with no export: ask them to paste four or five
+  representative conversations. Pasted text is fine evidence; it just carries no link.
+
+For the first two, `scripts/collect_evidence.py` does the extraction — it pulls the person's own
+turns verbatim, drops tool output and slash-command noise, and reports the count and date range:
+
+```bash
+python3 scripts/collect_evidence.py ~/.claude/projects --surface cc > evidence.json
+python3 scripts/collect_evidence.py conversations.json --surface gpt > evidence.json
+```
+
+It only extracts. The quote rules in Step 3 still apply to everything it returns.
+
+**Tier C — the six reflection questions** in `references/framework.md`. Always available, and the
+right answer when there is little or no history. **New starters usually have none — don't force
+it.** Their answers become the evidence, tagged `refleksion`, and the card says so.
+
+Tiers combine. A card built from claude.ai chats *plus* a Claude Code export is better than
+either alone, and the card will say it saw both.
+
+### 1b — Ask the data question
+
+**Always, even with rich history:** *"Do you think about what information you put in, for example
+ID numbers, salary, client data?"* (DA: *"Tænker du over, hvilke oplysninger du lægger ind, fx
+CPR, løn, kundedata?"*) Responsible use is the one thing a chat log structurally cannot show, so
+it is the one thing you have to ask. The answer goes in the diligence area's `self_report` and is
+labelled on the card as the person's own words.
+
+### 1c — Report back, then stop
+
+Report before assessing anything:
 
 - how many conversations you found
 - the date range they cover
-- which surfaces they came from
+- **which surfaces they came from, and which you could not reach from here** — name the scope
+  boundary in plain words, e.g. *"This is your non-project chat history. I can't see anything
+  inside your projects from here, or anything in other tools."*
+- **one concrete way to widen it**, drawn from Tier B and matched to what they actually use
 
 Then ask: *"Want me to run the assessment on this, or add anything first?"*
 (DA: *"Vil du køre vurderingen på det her, eller vil du tilføje noget først?"*)
 **Wait for an answer before generating the card.** Do not assess and confirm in the same turn.
+
+Whatever they choose, put the boundary in the snapshot: `basis` names the evidence, and `scope`
+names the slice it came from. Never let a partial pull present itself as the whole picture.
 
 ## Step 2 — Assess the four areas
 
@@ -98,8 +149,11 @@ Quotes are the part that can quietly go wrong. Hard rules:
 - **Under 150 characters.** If the line is longer, truncate at a word boundary and end with `…`.
   Truncation is the only edit allowed.
 - **Attach the source.** Each quote takes `url` (the chat URL from the search result) and
-  `surface` (`chat`, `cc`, `cowork`, or `refleksion`). Reflection answers given live in the
-  session have no URL — that's fine, they render unlinked.
+  `surface`: `chat` (claude.ai, outside projects), `project` (inside a claude.ai project), `cc`
+  (Claude Code), `cowork`, `gpt`, `gemini`, `copilot`, `other`, or `refleksion`. Tag what it
+  actually came from — the card builds its coverage line from these tags, so a quote from a
+  pasted ChatGPT log filed under `chat` makes the card overstate what it saw. Reflection answers
+  and pasted or exported material have no URL — that's fine, they render unlinked.
 - **Redact before you publish.** If the only good quote contains a client name, a colleague's
   name, or personal data, pick another quote or replace the sensitive part with `[…]`.
 - Only the text you actually gathered goes on the card. Do not infer, embellish, or generate
@@ -201,7 +255,9 @@ neither evidence nor a self-report, a confident read on fewer than 8 conversatio
 anywhere in the card text, a non-http link, no moves at all, more than three moves, no move on
 the weakest area, an example drawn from the same area as a move, or a next move sourced from an
 area marked not observed. It warns (but proceeds) on a scored area with no quote, a missing basis
-line, a move with no `from` field, or a not-observed area with no open question. If it
+line, a move with no `from` field, a not-observed area with no open question, an unknown
+`surface`, or a `high` confidence claim where every quote came from a single surface — a
+confident read on one slice of someone's AI use. If it
 refuses, fix the JSON — go back to the material and find a shorter real line. `--lax` downgrades
 errors to warnings; reach for it only when you know why. Do not "fix" a rejected quote by
 inventing a shorter one.
@@ -220,6 +276,10 @@ These come up, and the honest answer is not the accommodating one.
   snapshot built on partial evidence, not a performance record. Don't soften the straight talk
   for an audience. If they want something for a manager, that's a different document and they
   should write it.
+- **"Just use my project chats too."** You can't from here — history search reaches only where
+  it runs. Say that plainly rather than pulling what you can and hoping it covers the same
+  ground. Offer the two real options: run the skill again from inside the project, or export and
+  hand the material over.
 - **"Run it on someone on my team."** Only with material that person knowingly provided. You
   cannot see anyone else's history anyway, so the only inputs would be second-hand impressions —
   which is not evidence and not fair. Offer instead: send them the reflection questions and let
@@ -236,6 +296,7 @@ These come up, and the honest answer is not the accommodating one.
   "person": "Ny kollega",
   "date": "31. jul 2026",
   "basis": "12 samtaler fra chat, 1. jul – 30. jul",
+  "scope": "optional — overrides the coverage line the card derives from the quote surfaces",
   "confidence": "low | med | high",
   "statement": "optional — overrides the default sentence for the stage",
   "example": { "text": "optional, only if you kept the generic statement", "from": "delegation" },
@@ -270,12 +331,17 @@ translating a quote breaks the verbatim rule.
 the Danish equivalent.
 
 The script handles: the stage sentence, the band, each area's stage word, *ikke observeret*
-states, the icons, the journey illustration, the confidence chip, links, and all animation.
+states, the icons, the journey illustration, the confidence chip, links, and all animation. It
+also writes the card's own coverage lines — which surfaces the evidence came from, and a note
+telling the reader how to widen it — derived from the quote tags rather than from anything you
+assert, so they cannot drift from the evidence on the card.
 Keep `id` as one of `delegation | description | discernment | diligence` (icons key off it); the
 visible `label` is always plain language.
 
 Always close by reminding the person this is an exploratory snapshot to act on, not a verdict —
-and that it can only see what was in the material.
+and that it can only see what was in the material. Name the slice one more time, and repeat the
+one concrete way to widen it, so a card built on half their AI use is never mistaken for a card
+built on all of it.
 
 ## Honesty check before you present
 
@@ -284,6 +350,8 @@ and that it can only see what was in the material.
 - No number, score, or count anywhere on the card.
 - Areas without evidence say *ikke observeret* rather than carrying a guessed score.
 - `basis` names what the card could not see, and `n_sources` says how many conversations.
+- Every quote's `surface` is the tool it actually came from, so the coverage line is true.
+- The person was told which slice this is, and one concrete way to widen it.
 - `confidence` rounds down when in doubt, and is `low` below 8 conversations.
 - Every scored area's `anchor` matches its score, and its summary does not describe a lower one.
 - The data question was asked, and its answer is labelled as self-report.

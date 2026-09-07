@@ -1,0 +1,14 @@
+# macOS. A bare pattern matches at every depth, so this covers subfolders too.
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Python, from running the bundled scripts
+__pycache__/
+*.py[cod]
+
+# Local build output from the packaging workflow
+dist/

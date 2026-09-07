@@ -5,6 +5,18 @@ with AI, with evidence surfacing and referencing.
 
 English by default, with full Danish support.
 
+<a href="https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/latest/download/ai-competence-assessment.zip">
+  <img src="https://img.shields.io/badge/%E2%AC%87%20Download%20the%20skill-.zip-5A3FD4?style=for-the-badge" alt="Download the skill as a zip file">
+</a>
+
+**No install, no terminal.** Download the file above, then in Claude go to
+**Settings → Capabilities → Skills → Upload skill** and pick it. Leave it zipped —
+that is the format Claude expects. Then just ask Claude for an AI competence assessment.
+
+Requires a Claude Pro, Max, Team or Enterprise plan with file creation enabled. The
+package is rebuilt automatically from this repository on every change, so the link
+above is always the current version.
+
 ![Example image](example.png)
 
 ---
@@ -45,6 +57,7 @@ Honesty constraints is something we enforce through code. Every rule below is ch
 | Every next move declares which area it came from, and may not come from an unobserved area | Advice built on an absence is indistinguishable from advice built on evidence |
 | Gaps become open questions, not recommendations | Absence in a chat log is usually just absence |
 | Confidence rounds down; the card states what it could not see | Under-claiming is the honest failure mode |
+| The coverage line is derived from the quotes' own source tags, not asserted | A card that describes one slice of someone's AI use must not sound like it saw all of it |
 
 ### 3. Practitioner experience
 
@@ -60,6 +73,47 @@ The evidence on where the constraint actually sits is consistent across sources:
 - A CAISA report covered by DI Digital found that while two thirds of Danish SMEs use at least one AI technology, under 10% have it integrated into internal processes or products, and employees' missing AI competence is the barrier most often named by SME leaders. ([DI Digital, 2026](https://www.danskindustri.dk/brancher/di-digital/nyhedsarkiv/nyheder/2026/1/vi-har-talt-meget-om-udbredelsen-af-ai--nu-er-tiden-til-den-handgribelige-implementering/))
 
 **This is context, not method.** Neither source informs how this assessment scores anyone, and nothing here implements a DI recommendation. They establish that the gap is about competence rather than access, which is the problem this tool points at, and that is all they are cited for.
+
+---
+
+## What it can see (and what it can't)
+
+No single run sees all of anyone's AI use. Two boundaries cause this, and both are silent — you
+get a complete-looking card either way, which is exactly why the card states its own coverage.
+
+**Where you run it decides what it reads.** Conversation search only reaches the place it is run
+from. Run it in a normal chat and it reads your normal chats, but nothing inside your Projects.
+Run it inside a Project and it reads that Project, but nothing outside it. There is no warning
+and no overlap, so a card built on one side describes half your work in the voice of the whole.
+
+**No assistant can read another one's history.** Claude cannot see ChatGPT, Gemini, Copilot or
+Cursor, and none of them can see each other. If most of your real AI work happens somewhere else,
+a card built only on Claude chats is a card about a minority of your practice.
+
+### How to widen it
+
+The skill asks about this before it assesses anything, tells you which slice it is holding, and
+offers one of these. You can also just say up front where your work actually lives.
+
+| Where your work is | How to get it in |
+|---|---|
+| A Claude Project | Run the skill again from inside the Project, and ask it to combine the two runs |
+| Claude Code | Point the collector at your local transcripts in `~/.claude/projects/` |
+| ChatGPT | Settings → Data controls → Export data, then hand over `conversations.json` |
+| Gemini | Google Takeout → My Activity → Gemini Apps |
+| Anything else | Paste four or five representative conversations into the chat |
+
+```bash
+python3 scripts/collect_evidence.py ~/.claude/projects --surface cc > evidence.json
+python3 scripts/collect_evidence.py conversations.json --surface gpt > evidence.json
+```
+
+The collector only extracts your own messages, verbatim, and drops tool output and command noise.
+It never scores or summarises — the same quote rules apply to whatever it returns.
+
+Every quote on the card is tagged with the tool it came from, and the card's coverage line is
+built from those tags rather than from anything the model asserts, so it cannot claim to have
+seen more than it did. A confident read drawn from a single surface is flagged during generation.
 
 ---
 
@@ -79,7 +133,16 @@ The card states a version of this to the reader as well, it is not confined to t
 
 ## Using it
 
-Install the packaged `.skill`, then ask for an assessment in either language. The skill gathers the person's recent conversations, reports what it found, and **waits for confirmation** before assessing anything.
+Install the package with the download button at the top, then ask for an assessment in
+either language. The skill gathers the person's recent conversations, reports what it
+found, and **waits for confirmation** before assessing anything.
+
+In Claude Code, unzip it into `~/.claude/skills/` instead:
+
+```bash
+curl -L -o skill.zip https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/latest/download/ai-competence-assessment.zip
+unzip skill.zip -d ~/.claude/skills/
+```
 
 Manual use:
 
@@ -90,9 +153,14 @@ python3 scripts/generate_snapshot.py snapshot.json card.html
 Standard library only, no dependencies, runs offline. The generator exits non-zero and writes nothing if a safeguard is violated; `--lax` downgrades errors to warnings.
 
 ```
-skill/
-├── SKILL.md                     instructions for the model
-├── references/framework.md      labels, 1–5 anchors, safeguards (EN + DA)
+ai-competence-assessment/        the skill itself; this folder is what gets packaged
+├── SKILL.md                     instructions for the model, plus the name and
+│                                description Claude matches a request against
+├── references/framework.md      labels, 1–5 anchors, safeguards, surfaces (EN + DA)
 ├── scripts/generate_snapshot.py renderer + validator
+├── scripts/collect_evidence.py  pulls your own turns out of exported conversations
 └── assets/                      worked examples, EN and DA
 ```
+
+`.github/workflows/build-skill.yml` validates the frontmatter, renders both example
+snapshots as a smoke test, and republishes the download above on every push to `main`.

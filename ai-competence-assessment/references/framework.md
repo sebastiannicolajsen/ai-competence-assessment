@@ -233,9 +233,11 @@ Shorter, no reversals, and each sentence names something that actually happened.
 2. **Their turns only.** Never quote the assistant's output as evidence of the person.
 3. **Under 150 characters.** Longer lines are truncated at a word boundary with `…`.
 4. **Source attached.** Each quote carries the `url` of the conversation it came from and a
-   `surface` tag. Links are conversation-level — they open the chat, not the exact message — and
-   only work for the account that owns the history. Sandboxed previews may block them entirely;
-   the card reveals the raw address as a fallback.
+   `surface` tag naming the tool it actually came from — see the coverage section below. Links
+   are conversation-level — they open the chat, not the exact message — and only work for the
+   account that owns the history. Exported and pasted material has no link at all, which is
+   fine; it renders unlinked. Sandboxed previews may block links entirely; the card reveals the
+   raw address as a fallback.
 5. **No quote, no claim.** If you can't find a real line for an area, leave `quotes` empty and let
    the card show it as thin or not observed.
 6. **Redact.** Client names, colleagues' names, and personal data don't go on the card. Swap the
@@ -243,10 +245,46 @@ Shorter, no reversals, and each sentence names something that actually happened.
 7. **Nothing invented.** Summaries, examples and straight talk describe only what was in the
    material. No plausible-sounding filler.
 
+## Evidence sources and coverage
+
+The card is not Claude-only, and no single run sees all of anyone's AI use. Two boundaries cause
+this, and both are invisible unless the card says so.
+
+**The run-location boundary.** A history-search tool reaches only the place it is run from. On
+claude.ai a run outside a project cannot see project conversations; a run inside a project cannot
+see anything else. Nothing signals the missing half, so a card built from one side describes a
+slice while appearing to describe the whole.
+
+**The vendor boundary.** Claude cannot read ChatGPT, Gemini, Copilot or Cursor history, and none
+of them can read each other's. For many people the majority of their AI use sits on the other
+side of this line.
+
+| `surface` | What it means | Reachable by search? |
+|---|---|---|
+| `chat` | claude.ai, outside projects | yes, from a non-project run |
+| `project` | inside a claude.ai project | yes, only from inside that project |
+| `cowork` | Cowork | yes |
+| `cc` | Claude Code — local transcripts in `~/.claude/projects/` | no, export it |
+| `gpt` | ChatGPT — Settings → Data controls → Export data | no, export it |
+| `gemini` | Gemini — Google Takeout, My Activity → Gemini Apps | no, export it |
+| `copilot` | Copilot | no, paste it |
+| `other` | any other assistant | no, paste it |
+| `refleksion` | answers given live in this session | not applicable |
+
+`scripts/collect_evidence.py` reads the Claude Code and ChatGPT formats and returns the person's
+own turns, verbatim. Everything else is pasted by hand.
+
+Tag honestly. The card derives its coverage line from these tags, so mislabelling a pasted
+ChatGPT quote as `chat` makes the card claim reach it does not have. Combining surfaces in one
+snapshot is encouraged; that is how a card gets past both boundaries.
+
 ## Honesty: basis and confidence
 
 - **basis** — one plain line naming the evidence ("6 reflection questions — your own answers",
   "12 conversations from chat, 1–30 July"). If real work is invisible (other tools, offline), say so.
+- **scope** — optional override for the coverage line the card otherwise derives from the quote
+  surfaces. Write it when you know something the tags cannot show, for example that the person
+  said most of their real work happens in a project this run could not reach.
 - **confidence** — `low` for self-report or thin history (most new starters), `med` for a few real
   conversations, `high` only for rich, varied real usage. Round down when unsure.
 - **retrieval floor.** Put the number of conversations in `n_sources`. Below 8, confidence is
@@ -269,7 +307,7 @@ paragraph, plain, no compliment sandwich, naming the real weakness in behavior �
 character. If you catch yourself softening it, either write the honest version or leave the block
 out. It's about how the work went, not about who they are.
 
-## Reflection questions (use when there's little chat history — e.g. a new starter)
+## Reflection questions (use when there's little reachable history — a new starter, or a platform with no export)
 
 Ask these plainly, one at a time is fine. Areas in brackets.
 

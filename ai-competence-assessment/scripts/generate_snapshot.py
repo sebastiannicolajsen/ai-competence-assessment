@@ -61,7 +61,13 @@ T = {
             "high": "Bygget p\u00e5 mange, varierede samtaler, men stadig kun det der kunne ses.",
         },
         "limit_note": "Den kan kun se det, der er her. Ikke dit arbejde i andre v\u00e6rkt\u00f8jer eller det, du g\u00f8r uden AI. Brug det som et opl\u00e6g til samtale, ikke en m\u00e5ling.",
-        "src": {"chat": "chat", "cc": "Claude Code", "cowork": "Cowork", "refleksion": "refleksion"},
+        "scope_label": "Set i",
+        "scope_gap": "Ikke set i",
+        "scope_rest": "andre v\u00e6rkt\u00f8jer og det, du ikke har delt",
+        "widen_note": "Vil du have et bredere billede? K\u00f8r kortet igen inde i et projekt for at f\u00e5 dets samtaler med, og inds\u00e6t eller upload samtaler fra andre v\u00e6rkt\u00f8jer. S\u00f8gningen n\u00e5r kun det sted, den k\u00f8res fra.",
+        "src": {"chat": "chat", "project": "projekt", "cc": "Claude Code", "cowork": "Cowork",
+                "gpt": "ChatGPT", "gemini": "Gemini", "copilot": "Copilot",
+                "other": "andet v\u00e6rkt\u00f8j", "refleksion": "refleksion"},
         "src_hint": "\u00c5bn samtalen",
         "copy_hint": "Kopi\u00e9r link",
         "copied": "kopieret",
@@ -110,7 +116,13 @@ T = {
             "high": "Built on many varied conversations, but still only what could be seen.",
         },
         "limit_note": "It can only see what's here. Not your work in other tools or what you do without AI. Use it as a conversation starter, not a measurement.",
-        "src": {"chat": "chat", "cc": "Claude Code", "cowork": "Cowork", "refleksion": "reflection"},
+        "scope_label": "Seen in",
+        "scope_gap": "Not seen in",
+        "scope_rest": "other tools and anything you didn't share",
+        "widen_note": "Want a wider picture? Run the card again inside a project to pick up its conversations, and paste or upload conversations from other tools. History search only reaches the place it is run from.",
+        "src": {"chat": "chat", "project": "project", "cc": "Claude Code", "cowork": "Cowork",
+                "gpt": "ChatGPT", "gemini": "Gemini", "copilot": "Copilot",
+                "other": "another tool", "refleksion": "reflection"},
         "src_hint": "Open the conversation",
         "copy_hint": "Copy link",
         "copied": "copied",
@@ -189,7 +201,17 @@ LINK_ICON = '<path d="M7 17 17 7"/><path d="M9 7h8v8"/>'
 
 QUOTE_MAX = 150
 VALID_IDS = ("delegation", "description", "discernment", "diligence")
-VALID_SURFACES = ("chat", "cc", "cowork", "refleksion")
+# Where a quote came from. The card is not Claude-only: someone's real AI use is
+# usually spread across several tools and, on claude.ai, across the project /
+# non-project boundary that history search cannot cross in one run. Tagging the
+# surface honestly is what lets the card state its own coverage instead of
+# implying it saw everything.
+VALID_SURFACES = ("chat", "project", "cc", "cowork",
+                  "gpt", "gemini", "copilot", "other", "refleksion")
+
+# Surfaces a history-search tool can reach on its own. Anything else had to be
+# handed over by the person, which is what makes the coverage line meaningful.
+SEARCHABLE_SURFACES = ("chat", "project", "cowork")
 MIN_SOURCES = 8
 MAX_MOVES = 3
 
@@ -349,6 +371,19 @@ def validate(data, lax=False):
 
     if not data.get("basis"):
         warns.append("no basis line — the card won't say what it was built on")
+
+    # --- coverage --------------------------------------------------------
+    # History search only reaches the place it is run from: a run outside a
+    # project cannot see the project's conversations, a run inside one cannot
+    # see anything else, and neither can see another vendor's tool at all. So a
+    # confident read drawn from a single surface is a confident read about one
+    # slice of someone's AI use, presented as if it were all of it.
+    surfaces = [s for s in collect_surfaces(areas) if s != "refleksion"]
+    if conf == "high" and len(surfaces) == 1:
+        warns.append(
+            f"every quote comes from '{surfaces[0]}' but confidence is 'high'. History search "
+            f"reaches only where it was run, so this is a confident read on one slice. Widen the "
+            f"pull, or drop to 'med' and say what was out of reach in `scope`.")
     moves = data.get("moves") or []
     unseen = [a.get("id") or a.get("label") or "?" for a in areas if a.get("score") is None]
     seen = [a.get("id") for a in areas if a.get("score") is not None]
@@ -505,6 +540,23 @@ def marker_pos(composite, stage):
     """Keep the marker inside the awarded stage's zone, so label and dot never disagree."""
     lo, hi = ZONES[stage]
     return min(hi, max(lo, pos(composite)))
+
+
+def collect_surfaces(areas):
+    """Ordered, de-duplicated surface tags across every quote on the card.
+
+    Derived rather than declared. A `scope` line the model writes by hand is a
+    claim; this one is a consequence of the evidence that is actually on the
+    card, so it cannot drift from it.
+    """
+    order, seen = [], set()
+    for a in areas:
+        for q in a.get("quotes") or []:
+            s = q.get("surface", "") if isinstance(q, dict) else ""
+            if s and s not in seen:
+                seen.add(s)
+                order.append(s)
+    return order
 
 
 def build_journey(composite, tr, stage=None):
@@ -951,6 +1003,19 @@ def main():
         joined = blind[0] if blind else ""
     not_seen = tr["not_seen"].format(areas=joined) if joined else ""
 
+    # Coverage. The card is routinely built on one slice of someone's AI use --
+    # history search reaches only the place it is run from, so a run outside a
+    # project cannot see the project's chats and a run inside it cannot see
+    # anything else -- and nothing on the card used to say so. Stating the slice
+    # is the difference between "here is how you work with AI" and the narrower
+    # claim the evidence actually supports.
+    scope_line = str(data.get("scope", "")).strip()
+    if not scope_line:
+        labels = [tr["src"].get(s, s) for s in collect_surfaces(areas)]
+        if labels:
+            scope_line = (f'{tr["scope_label"]}: {", ".join(labels)}. '
+                          f'{tr["scope_gap"]}: {tr["scope_rest"]}')
+
     # The confidence is the one line here that changes how the whole card should
     # be read, so it stays on the surface and doubles as the toggle. Everything
     # under it is detail about where the reading came from.
@@ -968,8 +1033,10 @@ def main():
         f'<div class="fold-b">'
         f'<p class="about-line">{escape(tr["conf_info"][conf])}</p>'
         + (f'<p class="about-line">{escape(tr["basis_label"])}: {escape(basis)}.</p>' if basis else "")
+        + (f'<p class="about-line">{escape(scope_line)}.</p>' if scope_line else "")
         + (f'<p class="about-line">{escape(not_seen)}</p>' if not_seen else "")
         + f'<p class="about-line">{escape(tr["limit_note"])}</p>'
+        + f'<p class="about-line">{escape(tr["widen_note"])}</p>'
         f'</div></div>'
     )
 

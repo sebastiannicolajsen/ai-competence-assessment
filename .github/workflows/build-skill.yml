@@ -1,0 +1,78 @@
+name: Build skill package
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  SKILL_DIR: ai-competence-assessment
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate SKILL.md frontmatter
+        run: python3 .github/scripts/validate_skill.py "$SKILL_DIR"
+
+      - name: Smoke-test the scripts
+        run: |
+          python3 -m compileall -q "$SKILL_DIR/scripts"
+          for example in "$SKILL_DIR"/assets/example-snapshot*.json; do
+            echo "--- $example"
+            python3 "$SKILL_DIR/scripts/generate_snapshot.py" "$example" "/tmp/$(basename "$example" .json).html"
+          done
+          python3 "$SKILL_DIR/scripts/collect_evidence.py" --help > /dev/null
+          # The extractor must return the person's own turns and nothing else.
+          printf '%s' '[{"title":"t","conversation_id":"c1","create_time":1767225600,"mapping":{
+            "a":{"message":{"author":{"role":"user"},"create_time":1,"content":{"content_type":"text","parts":["Please tighten this memo and keep every number as it is."]}}},
+            "b":{"message":{"author":{"role":"assistant"},"create_time":2,"content":{"content_type":"text","parts":["Here you go, an assistant turn that must never be quoted."]}}}}}]' > /tmp/conversations.json
+          python3 "$SKILL_DIR/scripts/collect_evidence.py" /tmp/conversations.json > /tmp/evidence.json
+          python3 - <<'CHECK'
+          import json
+          ev = json.load(open("/tmp/evidence.json"))
+          msgs = [m for c in ev["conversations"] for m in c["messages"]]
+          assert ev["n_conversations"] == 1, ev
+          assert len(msgs) == 1, msgs
+          assert "assistant turn" not in msgs[0], "assistant output leaked into the evidence"
+          print("collect_evidence OK:", msgs)
+          CHECK
+
+      - name: Package the skill
+        run: |
+          mkdir -p dist
+          # claude.ai expects a zip whose root is the skill folder itself.
+          zip -r "dist/$SKILL_DIR.zip" "$SKILL_DIR" -x '*.DS_Store' '*/__pycache__/*'
+          # Same archive under the .skill extension, for clients that prefer it.
+          cp "dist/$SKILL_DIR.zip" "dist/$SKILL_DIR.skill"
+          unzip -l "dist/$SKILL_DIR.zip"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.SKILL_DIR }}-skill
+          path: dist/
+
+      - name: Publish rolling "latest" release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Recreate the rolling release so the tag tracks the current commit and
+          # releases/latest/download/... always serves this build.
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest \
+            "dist/$SKILL_DIR.zip" "dist/$SKILL_DIR.skill" \
+            --title "AI Competence Assessment — latest" \
+            --notes "Packaged from \`${GITHUB_SHA:0:7}\` on $(date -u +%Y-%m-%d).
+
+          **Install:** download \`$SKILL_DIR.zip\`, then in Claude go to **Settings → Capabilities → Skills → Upload skill** and pick the file. No unzipping needed.
+
+          Claude Code users can instead unzip it into \`~/.claude/skills/\`." \
+            --latest

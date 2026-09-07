@@ -73,11 +73,11 @@ jobs:
 
           notes="Packaged from \`${GITHUB_SHA:0:7}\` on $(date -u +%Y-%m-%d).
 
-          **Install:** download \`$SKILL_DIR.zip\`, then in Claude go to **Settings → Capabilities → Skills → Upload skill** and pick the file. No unzipping needed.
+          **Install:** download \`$SKILL_DIR.skill\`, then in Claude go to **Settings → Capabilities → Skills → Upload skill** and pick the file. Don't unpack it.
 
-          \`$SKILL_DIR.skill\` is the same archive under a different extension, for clients that expect it.
+          Both assets are the same archive, byte for byte. The \`.skill\` extension is the default because Safari silently expands \`.zip\` downloads into a folder, and the uploader wants the archive. If the file picker won't take the \`.skill\`, rename it to \`.zip\`.
 
-          Claude Code users can instead unzip either one into \`~/.claude/skills/\`."
+          Claude Code users can unzip either one into \`~/.claude/skills/\`."
 
           if gh release view latest > /dev/null 2>&1; then
             gh release upload latest "dist/$SKILL_DIR.zip" "dist/$SKILL_DIR.skill" --clobber

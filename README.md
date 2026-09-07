@@ -3,14 +3,16 @@
 A Claude skill that turns a person's own AI conversations into a one-page competence assessment. Actionable  plain-language understanding of how they work
 with AI, with evidence surfacing and referencing.
 
-<a href="https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.zip">
-  <img src="https://img.shields.io/badge/%E2%AC%87%20Download%20the%20skill-.zip-5A3FD4?style=for-the-badge" alt="Download the skill as a zip file">
+<a href="https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.skill">
+  <img src="https://img.shields.io/badge/%E2%AC%87%20Download%20the%20skill-.skill-5A3FD4?style=for-the-badge" alt="Download the skill">
 </a>
 
  Download the file above, then in Claude go to
-**Settings → Capabilities → Skills → Upload skill** and pick the file. Then just ask Claude for an AI competence assessment, or use `/` to select the skill. The same archive is also published as [`ai-competence-assessment.skill`](https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.skill) — byte-identical, for anything that expects that extension.
+**Settings → Capabilities → Skills → Upload skill** and pick the file. Then just ask Claude for an AI competence assessment, or use `/` to select the skill.
 
-**Note: when used outside of a project, it does not access chat history from a project, and vice-versa.**
+<sub>The button hands you a `.skill` file because Safari silently unpacks `.zip` downloads into a folder, and Claude wants the archive, not the folder. If Claude's file picker won't take the `.skill`, rename it to `ai-competence-assessment.zip` and upload that — it is the same archive, byte for byte. On Chrome, Firefox or Edge you can also just take the [`.zip`](https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.zip) directly.</sub>
+
+***Note: when used outside of a project, it does not access chat history from any projects, and vice-versa. Use inside a project to a snapshot of your way of working within that.***
 
 Requires a Claude Pro, Max, Team or Enterprise plan with file creation enabled.
 

@@ -3,19 +3,16 @@
 A Claude skill that turns a person's own AI conversations into a one-page competence assessment. Actionable  plain-language understanding of how they work
 with AI, with evidence surfacing and referencing.
 
-English by default, with full Danish support.
-
-<a href="https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/latest/download/ai-competence-assessment.zip">
+<a href="https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.zip">
   <img src="https://img.shields.io/badge/%E2%AC%87%20Download%20the%20skill-.zip-5A3FD4?style=for-the-badge" alt="Download the skill as a zip file">
 </a>
 
-**No install, no terminal.** Download the file above, then in Claude go to
-**Settings → Capabilities → Skills → Upload skill** and pick it. Leave it zipped —
-that is the format Claude expects. Then just ask Claude for an AI competence assessment.
+ Download the file above, then in Claude go to
+**Settings → Capabilities → Skills → Upload skill** and pick the file. Then just ask Claude for an AI competence assessment, or use `/` to select the skill. The same archive is also published as [`ai-competence-assessment.skill`](https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.skill) — byte-identical, for anything that expects that extension.
 
-Requires a Claude Pro, Max, Team or Enterprise plan with file creation enabled. The
-package is rebuilt automatically from this repository on every change, so the link
-above is always the current version.
+**Note: when used outside of a project, it does not access chat history from a project, and vice-versa.**
+
+Requires a Claude Pro, Max, Team or Enterprise plan with file creation enabled.
 
 ![Example image](example.png)
 
@@ -140,7 +137,7 @@ found, and **waits for confirmation** before assessing anything.
 In Claude Code, unzip it into `~/.claude/skills/` instead:
 
 ```bash
-curl -L -o skill.zip https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/latest/download/ai-competence-assessment.zip
+curl -L -o skill.zip https://github.com/sebastiannicolajsen/ai-competence-assessment/releases/download/latest/ai-competence-assessment.zip
 unzip skill.zip -d ~/.claude/skills/
 ```
 

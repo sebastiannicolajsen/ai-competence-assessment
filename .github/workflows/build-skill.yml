@@ -64,15 +64,36 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Recreate the rolling release so the tag tracks the current commit and
-          # releases/latest/download/... always serves this build.
-          gh release delete latest --yes --cleanup-tag || true
-          gh release create latest \
-            "dist/$SKILL_DIR.zip" "dist/$SKILL_DIR.skill" \
-            --title "AI Competence Assessment — latest" \
-            --notes "Packaged from \`${GITHUB_SHA:0:7}\` on $(date -u +%Y-%m-%d).
+          # Never delete the release. Deleting and recreating it leaves a window
+          # with no release in the repo at all, which 404s the README's download
+          # button on every push, and strands it permanently if the create step
+          # then fails. Move the tag, then replace the assets in place.
+          git tag -f latest
+          git push -f origin latest
+
+          notes="Packaged from \`${GITHUB_SHA:0:7}\` on $(date -u +%Y-%m-%d).
 
           **Install:** download \`$SKILL_DIR.zip\`, then in Claude go to **Settings → Capabilities → Skills → Upload skill** and pick the file. No unzipping needed.
 
-          Claude Code users can instead unzip it into \`~/.claude/skills/\`." \
-            --latest
+          \`$SKILL_DIR.skill\` is the same archive under a different extension, for clients that expect it.
+
+          Claude Code users can instead unzip either one into \`~/.claude/skills/\`."
+
+          if gh release view latest > /dev/null 2>&1; then
+            gh release upload latest "dist/$SKILL_DIR.zip" "dist/$SKILL_DIR.skill" --clobber
+            gh release edit latest --title "AI Competence Assessment — latest" --notes "$notes" --latest
+          else
+            gh release create latest \
+              "dist/$SKILL_DIR.zip" "dist/$SKILL_DIR.skill" \
+              --title "AI Competence Assessment — latest" \
+              --notes "$notes" \
+              --latest
+          fi
+
+          # The README links straight at the tag, so prove both assets resolve.
+          base="https://github.com/$GITHUB_REPOSITORY/releases/download/latest"
+          for asset in "$SKILL_DIR.zip" "$SKILL_DIR.skill"; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -L "$base/$asset")
+            echo "$code  $base/$asset"
+            [ "$code" = "200" ] || exit 1
+          done
